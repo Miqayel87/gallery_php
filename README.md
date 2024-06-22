@@ -9,7 +9,8 @@ Welcome to the Gallery Web App! This application allows users to upload, manage,
 - **User Authentication**
 - **Image Upload**
 - **Image Gallery**
-- **Image Dwonload**
+- **Image Download**
+- **Image Like**
 - **Responsive Design**
 
 ## Installation
@@ -17,7 +18,7 @@ Welcome to the Gallery Web App! This application allows users to upload, manage,
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/Miqayel87/real_estate.git
+   git clone https://github.com/Miqayel87/gallery_php
    ```
 
 2. Set up the database:
