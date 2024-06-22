@@ -4,6 +4,7 @@ class Route
 {
     private $controller;
     private $method;
+    private $urlParts;
 
     public function __construct($routes)
     {
@@ -17,21 +18,24 @@ class Route
         $url = $_SERVER['REQUEST_URI'];
         $url = parse_url($url, PHP_URL_PATH);
         $url = trim($url, '/');
-        $urlParts = explode('/', $url);
+        $this->urlParts = explode('/', $url);
 
         $this->controller = $routes['default_controller'];
         $this->method = $routes['default_method'];
 
-        if ($urlParts[0] !== 'auth' && !$_SESSION['user']) {
-            header('Location:' . BASE_URL . 'auth/index');
-        }
-
-        if (!empty($urlParts[0])) {
-            $this->controller = ucfirst($urlParts[0]) . 'Controller';
-            if (!empty($urlParts[1])) {
-                $this->method = $urlParts[1];
+        if (!isset($_SESSION['user'])) {
+            if ($this->urlParts[1] !== 'login' && $this->urlParts[1] !== 'registration') {
+                header('Location:' . BASE_URL . 'login');
             }
         }
+
+        if (!empty($this->urlParts[1])) {
+            $this->controller = ucfirst($this->urlParts[1]) . 'Controller';
+            if (!empty($this->urlParts[2])) {
+                $this->method = $this->urlParts[2];
+            }
+        }
+
     }
 
     private function loadController()
@@ -52,7 +56,11 @@ class Route
     private function callMethod()
     {
         if (method_exists($this->controller, $this->method)) {
-            call_user_func([$this->controller, $this->method]);
+            if (isset($this->urlParts[3])) {
+                call_user_func([$this->controller, $this->method], $this->urlParts[3]);
+            } else {
+                call_user_func([$this->controller, $this->method]);
+            }
         } else {
             die('Method not found.');
         }
